@@ -52,7 +52,7 @@
     if (C.LINKEDIN_URL) items.push('<li><a href="' + C.LINKEDIN_URL + '" target="_blank" rel="noopener">LinkedIn</a></li>');
     if (C.CIDADE_UF) items.push("<li>" + C.CIDADE_UF + "</li>");
     if (C.CNPJ) items.push("<li>CNPJ " + C.CNPJ + "</li>");
-    contact.innerHTML = items.join("");
+    if (items.length) contact.innerHTML = '<li class="footer-title">Contato</li>' + items.join("");
   }
 
   // ---------- Header e menu ----------
@@ -85,6 +85,28 @@
   toggle.addEventListener("click", function () { setMenu(toggle.getAttribute("aria-expanded") !== "true"); });
   nav.addEventListener("click", function (e) { if (e.target.closest("a")) setMenu(false); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") setMenu(false); });
+
+  // ---------- Menu: marca a seção em que o visitante está ----------
+  var spyLinks = {};
+  nav.querySelectorAll('a[href^="#"]').forEach(function (a) { spyLinks[a.getAttribute("href").slice(1)] = a; });
+  if ("IntersectionObserver" in window) {
+    var spy = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var link = spyLinks[entry.target.id];
+        if (!link) return;
+        if (entry.isIntersecting) {
+          Object.keys(spyLinks).forEach(function (id) { spyLinks[id].removeAttribute("aria-current"); });
+          link.setAttribute("aria-current", "true");
+        } else {
+          link.removeAttribute("aria-current");
+        }
+      });
+    }, { rootMargin: "-45% 0px -50% 0px" });
+    Object.keys(spyLinks).forEach(function (id) {
+      var sec = document.getElementById(id);
+      if (sec) spy.observe(sec);
+    });
+  }
 
   // ---------- CTAs: rastrear; os de diagnóstico abrem o pop-up de aplicação ----------
   document.querySelectorAll("[data-cta]").forEach(function (el) {
@@ -182,6 +204,17 @@
       startPreview();
     }
 
+    // Fio de progresso enquanto a prévia muda toca (escreve direto no transform, sem variável CSS).
+    var heroBar = document.getElementById("hero-progress");
+    if (heroBar && window.requestAnimationFrame) {
+      (function tick() {
+        if (heroPlayer.classList.contains("is-preview") && heroVideo.duration && !document.hidden) {
+          heroBar.style.transform = "scaleX(" + (heroVideo.currentTime / heroVideo.duration).toFixed(4) + ")";
+        }
+        if (!heroPlayer.classList.contains("is-playing")) requestAnimationFrame(tick);
+      })();
+    }
+
     // Analytics: início, metade e fim (uma vez cada)
     // Só conta quem assiste com som; a prévia muda tem o próprio evento (video_autoplay).
     heroVideo.addEventListener("play", function () { if (!heroVideo.muted) mark("video_play"); });
@@ -203,7 +236,7 @@
         // pequenos atrasos em grupos lado a lado
         var siblings = Array.prototype.filter.call(el.parentElement.children, function (c) { return c.classList.contains("reveal"); });
         var i = siblings.indexOf(el);
-        el.style.transitionDelay = (i > 0 ? Math.min(i, 5) * 70 : 0) + "ms";
+        el.style.transitionDelay = [0, 60, 110, 150, 180, 200][Math.min(Math.max(i, 0), 5)] + "ms";
         el.classList.add("in");
         io.unobserve(el);
       });
@@ -220,6 +253,24 @@
     }, { threshold: 0.15 }).observe(diag);
   }
 
+  // ---------- Barra de ação no celular ----------
+  // Aparece depois que os botões do topo saem da tela e some perto da seção de diagnóstico.
+  var ctaBar = document.getElementById("cta-bar");
+  var heroActions = document.querySelector(".hero .actions");
+  if (ctaBar && heroActions && diag && "IntersectionObserver" in window) {
+    document.body.classList.add("has-cta-bar");
+    var pastHero = false, nearDiag = false;
+    var syncBar = function () { ctaBar.classList.toggle("is-on", pastHero && !nearDiag); };
+    new IntersectionObserver(function (entries) {
+      pastHero = !entries[0].isIntersecting && entries[0].boundingClientRect.top < 0;
+      syncBar();
+    }).observe(heroActions);
+    new IntersectionObserver(function (entries) {
+      nearDiag = entries[0].isIntersecting;
+      syncBar();
+    }, { threshold: 0.05 }).observe(diag);
+  }
+
   // ---------- Pop-up de aplicação para o diagnóstico gratuito ----------
   // Passo 1: contato e se tem loja. Passo 2: sobre a loja. Envio: FORM_ENDPOINT → WhatsApp → aviso.
   var applyDialog = document.getElementById("apply-dialog");
@@ -234,23 +285,25 @@
   var utm = {};
   new URLSearchParams(location.search).forEach(function (v, k) { if (/^utm_/.test(k)) utm[k] = v; });
 
-  function showStep(name) {
+  function showStep(name, dir) {
+    // dir: "next" ou "back" animam a troca; sem dir, o passo aparece direto (abertura do pop-up).
+    if (dir) form.setAttribute("data-dir", dir); else form.removeAttribute("data-dir");
     steps.forEach(function (s) { s.hidden = s.getAttribute("data-step") !== name; });
     bars.forEach(function (b, i) { b.classList.toggle("on", name === "done" || i < Number(name)); });
     form.querySelector(".apply-progress").hidden = name === "done";
     var focusEl = form.querySelector('.apply-step[data-step="' + name + '"] ' + (name === "done" ? ".apply-title" : "input, select"));
-    if (focusEl) focusEl.focus();
+    if (focusEl && applyDialog.open) focusEl.focus({ preventScroll: true });
     applyDialog.scrollTop = 0;
   }
 
   function openApply(trigger) {
     lastTrigger = trigger || null;
     applyOrigin = (trigger && trigger.getAttribute("data-cta")) || "";
-    if (form.querySelector('[data-step="done"]').hidden === false) { form.reset(); setStatus("", ""); }
+    if (form.querySelector('[data-step="done"]').hidden === false) { form.reset(); setStatus("", ""); showStep("1"); }
     if (typeof applyDialog.showModal === "function") applyDialog.showModal();
     else applyDialog.setAttribute("open", "");
     document.body.classList.add("dialog-open");
-    if (form.querySelector('[data-step="2"]').hidden) showStep("1");
+    showStep(form.querySelector('[data-step="2"]').hidden ? "1" : "2");
     track("apply_open", { origem: applyOrigin });
   }
   function closeApply() {
@@ -259,7 +312,10 @@
   }
   function onClose() {
     document.body.classList.remove("dialog-open");
-    if (!form.querySelector('[data-step="done"]').hidden) { form.reset(); showStep("1"); setStatus("", ""); }
+    // Depois de uma aplicação enviada, volta ao passo 1 só quando o pop-up terminar de sair.
+    if (!form.querySelector('[data-step="done"]').hidden) {
+      setTimeout(function () { if (!applyDialog.open) { form.reset(); showStep("1"); setStatus("", ""); } }, 220);
+    }
     if (lastTrigger) lastTrigger.focus({ preventScroll: true });
   }
   if (!applyDialog || !form) return;
@@ -343,9 +399,9 @@
     if (!checkStep(1)) return;
     applyStoreMode();
     track("apply_step1", { origem: applyOrigin, tem_loja: hasStore() ? "sim" : "nao" });
-    showStep("2");
+    showStep("2", "next");
   });
-  document.getElementById("apply-back").addEventListener("click", function () { setStatus("", ""); showStep("1"); });
+  document.getElementById("apply-back").addEventListener("click", function () { setStatus("", ""); showStep("1", "back"); });
   // Enter no passo 1 avança em vez de enviar
   form.addEventListener("keydown", function (e) {
     if (e.key === "Enter" && !form.querySelector('[data-step="1"]').hidden && e.target.tagName === "INPUT") {
@@ -376,7 +432,7 @@
 
   form.addEventListener("submit", function (e) {
     e.preventDefault();
-    if (!checkStep(1)) { showStep("1"); checkStep(1); return; }
+    if (!checkStep(1)) { showStep("1", "back"); checkStep(1); return; }
     if (!checkStep(2)) return;
     var store = hasStore();
 
@@ -402,7 +458,7 @@
       track("form_submit", { origem: applyOrigin, tem_loja: store ? "sim" : "nao", faturamento: data.faturamento, equipe: data.equipe });
       if (text) document.getElementById("apply-done-text").textContent = text;
       setStatus("", "");
-      showStep("done");
+      showStep("done", "next");
     }
 
     if (C.FORM_ENDPOINT) {

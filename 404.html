@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Página não encontrada | Northum</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#0A1828">
+  <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <style>
+    /* Página de erro: ocupa a tela inteira, com o mesmo fundo do topo do site */
+    .lost { min-height: 100dvh; display: grid; align-content: center; justify-items: center; padding: 6rem var(--gutter) 4rem; text-align: center; }
+    .lost .brand { margin-bottom: 3rem; }
+    .lost-code { font-size: clamp(6rem, 4rem + 14vw, 13rem); font-weight: 800; letter-spacing: -.07em; line-height: .8; color: transparent; -webkit-text-stroke: 1.5px rgba(191, 161, 129, .55); }
+    .lost h1 { margin-top: 1.6rem; font-size: clamp(1.8rem, 1.3rem + 2vw, 2.8rem); }
+    .lost .lead { margin-inline: auto; }
+    .lost .actions { justify-content: center; }
+  </style>
+</head>
+<body>
+  <main class="hero lost">
+    <div class="hero-dots" aria-hidden="true"></div>
+    <a class="brand" href="/" aria-label="Northum, página inicial" style="position:relative">
+      <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 19 21 12 16.5 5 21Z"/></svg>
+      <span>Northum</span>
+    </a>
+    <p class="lost-code" aria-hidden="true" style="position:relative">404</p>
+    <h1 style="position:relative">Esta página não existe</h1>
+    <p class="lead" style="position:relative">O endereço pode ter mudado ou sido digitado errado. A página inicial tem tudo sobre o que a Northum faz.</p>
+    <div class="actions" style="position:relative">
+      <a class="btn btn-primary" href="/">Ir para a página inicial</a>
+      <a class="btn btn-ghost" href="/#diagnostico">Diagnóstico gratuito</a>
+    </div>
+  </main>
+</body>
+</html>

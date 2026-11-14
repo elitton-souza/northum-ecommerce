@@ -8,13 +8,32 @@
   <meta property="og:title" content="Northum | Desempenho comercial e operacional para e-commerce">
   <meta property="og:description" content="Diagnóstico, implementação e acompanhamento de soluções em aquisição, conversão e retenção para e-commerces.">
   <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.northum.com.br/">
+  <meta property="og:site_name" content="Northum">
+  <meta property="og:image" content="https://www.northum.com.br/assets/img/northum-og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Northum: uma parceira de desempenho para o seu e-commerce">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://www.northum.com.br/">
   <meta property="og:locale" content="pt_BR">
   <meta name="theme-color" content="#0A1828">
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="assets/video/northum-institucional-capa.jpg" fetchpriority="high">
   <link rel="stylesheet" href="assets/css/styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Northum",
+    "url": "https://www.northum.com.br/",
+    "logo": "https://www.northum.com.br/assets/img/favicon.svg",
+    "description": "A Northum identifica gargalos na jornada do cliente e implementa soluções em aquisição, conversão e retenção para e-commerces."
+  }
+  </script>
   <script>document.documentElement.classList.add("js");</script>
   <script src="config.js"></script>
 </head>
@@ -84,6 +103,7 @@
             </span>
             <span class="hero-play-text"><span class="t-play">Assistir ao vídeo<small>1:40 · com legendas</small></span><span class="t-sound">Ativar som<small>assistir do início</small></span></span>
           </button>
+          <span class="hero-progress" aria-hidden="true"><i id="hero-progress"></i></span>
         </figure>
 
         <div class="actions">
@@ -623,17 +643,17 @@
           <h2>Antes de <span class="hl">começar</span></h2>
         </div>
         <div class="faq reveal">
-          <details><summary>O que a Northum faz, exatamente?</summary><p>Identifica os gargalos na jornada do cliente do seu e-commerce e implementa soluções em aquisição, conversão e retenção, integradas aos seus sistemas e processos. Depois, pode manter e otimizar o que foi implementado ou assumir a operação de módulos específicos.</p></details>
-          <details><summary>Preciso contratar soluções nas três áreas?</summary><p>Não. Cada projeto começa pelo problema prioritário. A proposta cobre o que o diagnóstico mostrar que faz sentido agora.</p></details>
-          <details><summary>A Northum é uma agência de inteligência artificial?</summary><p>Não. Usamos inteligência artificial e automação quando fazem sentido para o problema, mas o foco é o desempenho comercial e operacional do seu e-commerce. A tecnologia é o meio.</p></details>
-          <details><summary>Vocês garantem aumento de vendas?</summary><p>Não. Garantimos a execução do que foi contratado, com critérios de aceite. O resultado depende de vários fatores, como tráfego, preço, estoque e oferta, e é medido com uma linha de base e indicadores acordados.</p></details>
-          <details><summary>Qual a diferença entre manutenção e operação?</summary><p>A manutenção mantém a solução funcionando e promove melhorias: monitoramento, correções, ajustes e otimizações. A operação é a execução contínua de atividades de um módulo pela Northum. São serviços diferentes, com escopo e preço próprios.</p></details>
-          <details><summary>O que é o Método Conversão 7D?</summary><p>Uma das nossas ofertas na área de conversão: a implementação de uma assistência comercial para o pré-atendimento do e-commerce. "7D" se refere à disponibilidade 7 dias por semana, dentro do escopo acordado. Não é prazo de implementação nem promessa de resultado.</p></details>
-          <details><summary>Funciona com a minha plataforma e os meus sistemas?</summary><p>Depende. Avaliamos plataformas, canais e sistemas no diagnóstico e definimos na proposta as integrações viáveis.</p></details>
-          <details><summary>Quanto tempo leva um projeto?</summary><p>O prazo é definido na proposta, conforme o escopo, as integrações e a disponibilidade das informações.</p></details>
-          <details><summary>Preciso participar do projeto?</summary><p>Sim. Precisamos de alguém da sua equipe para fornecer informações e acessos, aprovar regras e participar dos testes.</p></details>
-          <details><summary>Como é cobrado?</summary><p>A implementação é um projeto com valor definido na proposta. Manutenção e operação são contratações recorrentes, com escopo e preço próprios.</p></details>
-          <details><summary>O que é o diagnóstico? Tem custo?</summary><p>O diagnóstico é gratuito. É uma conversa para entender a sua operação, identificar onde a jornada do cliente perde oportunidades e verificar se e como a Northum pode ajudar.</p></details>
+          <details name="faq"><summary>O que a Northum faz, exatamente?</summary><p>Identifica os gargalos na jornada do cliente do seu e-commerce e implementa soluções em aquisição, conversão e retenção, integradas aos seus sistemas e processos. Depois, pode manter e otimizar o que foi implementado ou assumir a operação de módulos específicos.</p></details>
+          <details name="faq"><summary>Preciso contratar soluções nas três áreas?</summary><p>Não. Cada projeto começa pelo problema prioritário. A proposta cobre o que o diagnóstico mostrar que faz sentido agora.</p></details>
+          <details name="faq"><summary>A Northum é uma agência de inteligência artificial?</summary><p>Não. Usamos inteligência artificial e automação quando fazem sentido para o problema, mas o foco é o desempenho comercial e operacional do seu e-commerce. A tecnologia é o meio.</p></details>
+          <details name="faq"><summary>Vocês garantem aumento de vendas?</summary><p>Não. Garantimos a execução do que foi contratado, com critérios de aceite. O resultado depende de vários fatores, como tráfego, preço, estoque e oferta, e é medido com uma linha de base e indicadores acordados.</p></details>
+          <details name="faq"><summary>Qual a diferença entre manutenção e operação?</summary><p>A manutenção mantém a solução funcionando e promove melhorias: monitoramento, correções, ajustes e otimizações. A operação é a execução contínua de atividades de um módulo pela Northum. São serviços diferentes, com escopo e preço próprios.</p></details>
+          <details name="faq"><summary>O que é o Método Conversão 7D?</summary><p>Uma das nossas ofertas na área de conversão: a implementação de uma assistência comercial para o pré-atendimento do e-commerce. "7D" se refere à disponibilidade 7 dias por semana, dentro do escopo acordado. Não é prazo de implementação nem promessa de resultado.</p></details>
+          <details name="faq"><summary>Funciona com a minha plataforma e os meus sistemas?</summary><p>Depende. Avaliamos plataformas, canais e sistemas no diagnóstico e definimos na proposta as integrações viáveis.</p></details>
+          <details name="faq"><summary>Quanto tempo leva um projeto?</summary><p>O prazo é definido na proposta, conforme o escopo, as integrações e a disponibilidade das informações.</p></details>
+          <details name="faq"><summary>Preciso participar do projeto?</summary><p>Sim. Precisamos de alguém da sua equipe para fornecer informações e acessos, aprovar regras e participar dos testes.</p></details>
+          <details name="faq"><summary>Como é cobrado?</summary><p>A implementação é um projeto com valor definido na proposta. Manutenção e operação são contratações recorrentes, com escopo e preço próprios.</p></details>
+          <details name="faq"><summary>O que é o diagnóstico? Tem custo?</summary><p>O diagnóstico é gratuito. É uma conversa para entender a sua operação, identificar onde a jornada do cliente perde oportunidades e verificar se e como a Northum pode ajudar.</p></details>
         </div>
       </div>
     </section>
@@ -680,19 +700,30 @@
           <span data-config="NOME_EMPRESA">Northum</span>
         </a>
         <p>Soluções em aquisição, conversão e retenção para melhorar o desempenho comercial e operacional de e-commerces.</p>
+        <a class="btn btn-primary btn-sm footer-cta" href="#diagnostico" data-cta="rodape">Aplicar para o diagnóstico gratuito</a>
       </div>
       <nav aria-label="Rodapé" class="footer-nav">
+        <p class="footer-title">Site</p>
         <a href="#problema">O problema</a>
-        <a href="#atuacao">Atuação</a>
+        <a href="#atuacao">Áreas de atuação</a>
         <a href="#como-funciona">Como trabalhamos</a>
-        <a href="#parceria">Parceria</a>
-        <a href="#perguntas">Perguntas</a>
-        <a href="privacidade.html">Política de privacidade</a>
+        <a href="#parceria">Modelo de parceria</a>
+        <a href="#perguntas">Perguntas frequentes</a>
       </nav>
       <ul class="footer-contact" id="footer-contact"></ul>
     </div>
-    <p class="wrap footer-copy">© <span id="ano"></span> <span data-config="NOME_EMPRESA">Northum</span>. Todos os direitos reservados.</p>
+    <p class="footer-word" aria-hidden="true">Northum</p>
+    <div class="wrap footer-copy">
+      <p>© <span id="ano"></span> <span data-config="NOME_EMPRESA">Northum</span>. Todos os direitos reservados.</p>
+      <a href="privacidade.html">Política de privacidade</a>
+      <a class="footer-top" href="#topo">Voltar ao topo <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </div>
   </footer>
+
+  <!-- Barra de ação fixa no celular: aparece depois do topo e some perto da seção de diagnóstico -->
+  <div class="cta-bar" id="cta-bar">
+    <a class="btn btn-primary btn-block" href="#diagnostico" data-cta="barra-celular">Aplicar para o diagnóstico gratuito</a>
+  </div>
 
   <!-- Pop-up de aplicação para o diagnóstico gratuito (aberto pelos botões que apontam para #diagnostico) -->
   <dialog class="apply-dialog" id="apply-dialog" aria-labelledby="apply-title">
