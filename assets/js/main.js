@@ -81,14 +81,19 @@
     toggle.setAttribute("aria-expanded", String(open));
     toggle.setAttribute("aria-label", open ? "Fechar menu" : "Abrir menu");
     nav.classList.toggle("open", open);
+    header.classList.toggle("menu-open", open);
+    document.documentElement.classList.toggle("menu-open", open);
   }
   toggle.addEventListener("click", function () { setMenu(toggle.getAttribute("aria-expanded") !== "true"); });
   nav.addEventListener("click", function (e) { if (e.target.closest("a")) setMenu(false); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") setMenu(false); });
+  // Toque fora da barra (no fundo escurecido) fecha o menu.
+  header.addEventListener("click", function (e) { if (e.target === header) setMenu(false); });
+  window.addEventListener("resize", function () { if (window.innerWidth > 1020) setMenu(false); });
 
   // ---------- Menu: marca a seção em que o visitante está ----------
   var spyLinks = {};
-  nav.querySelectorAll('a[href^="#"]').forEach(function (a) { spyLinks[a.getAttribute("href").slice(1)] = a; });
+  nav.querySelectorAll('a[href^="#"]:not(.nav-cta)').forEach(function (a) { spyLinks[a.getAttribute("href").slice(1)] = a; });
   if ("IntersectionObserver" in window) {
     var spy = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
