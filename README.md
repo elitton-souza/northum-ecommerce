@@ -1,6 +1,8 @@
 # northum-ecommerce
 
-Landing page do **Método Conversão 7D**: implementação de agente comercial com IA para o pré-venda do e-commerce.
+Site da **Northum**: agente de IA que atende o WhatsApp de e-commerces 24/7, com painel ao vivo (botão Assumir), kanban e dashboard das conversas.
+
+A página `vsl/` ainda descreve a oferta antiga (Método Conversão 7D) e não tem link no site.
 
 Site estático (HTML, CSS e JavaScript, sem build).
 

@@ -35,7 +35,7 @@
   });
 
   document.querySelectorAll(".js-whatsapp").forEach(function (a) {
-    a.href = waLink("Olá! Quero conversar sobre o meu e-commerce com a Northum.");
+    a.href = waLink("Olá! Quero conhecer o agente de WhatsApp da Northum.");
     a.target = "_blank";
     a.rel = "noopener";
   });
@@ -108,12 +108,28 @@
     });
   }
 
-  // ---------- CTAs: rastrear; os de diagnóstico abrem o pop-up de aplicação ----------
+  // ---------- Painel de exemplo no topo: botão "Assumir conversa" ----------
+  var mock = document.getElementById("app-mock");
+  var takeBtn = document.getElementById("am-take");
+  if (mock && takeBtn) {
+    takeBtn.addEventListener("click", function () {
+      if (takeBtn.getAttribute("aria-pressed") === "true") return;
+      takeBtn.setAttribute("aria-pressed", "true");
+      takeBtn.querySelector("span").textContent = "Você assumiu";
+      mock.classList.add("is-taken");
+      document.getElementById("am-status").textContent = "Você está respondendo";
+      document.getElementById("am-sys").hidden = false;
+      document.getElementById("am-input").textContent = "Escreva sua mensagem para a Mariana…";
+      track("demo_assumir");
+    });
+  }
+
+  // ---------- CTAs: rastrear; os de demonstração abrem o pop-up de agendamento ----------
   document.querySelectorAll("[data-cta]").forEach(function (el) {
     el.addEventListener("click", function (e) {
       track("cta_click", { origem: el.getAttribute("data-cta") });
       if (el.classList.contains("js-whatsapp")) track("whatsapp_click", { origem: el.getAttribute("data-cta") });
-      if (el.getAttribute("href") === "#diagnostico" && applyDialog) {
+      if (el.getAttribute("href") === "#demonstracao" && applyDialog) {
         e.preventDefault();
         openApply(el);
       }
@@ -246,7 +262,7 @@
 
   // ---------- WhatsApp flutuante some perto do formulário ----------
   var fab = document.querySelector(".wa-float");
-  var diag = document.getElementById("diagnostico");
+  var diag = document.getElementById("demonstracao");
   if (fab && diag && "IntersectionObserver" in window) {
     new IntersectionObserver(function (entries) {
       fab.classList.toggle("tucked", entries[0].isIntersecting);
@@ -417,7 +433,7 @@
 
   function summary(d) {
     return [
-      "Olá! Quero aplicar para o diagnóstico gratuito da Northum.",
+      "Olá! Quero agendar uma demonstração do agente de WhatsApp da Northum.",
       "",
       "Nome: " + d.nome,
       "E-mail: " + d.email,
@@ -425,6 +441,7 @@
       "Tem loja: " + d.tem_loja,
       "Segmento: " + d.segmento,
       d.faturamento ? "Faturamento mensal: " + d.faturamento : "",
+      d.mensagens ? "Mensagens por dia no WhatsApp: " + d.mensagens : "",
       "Equipe: " + d.equipe,
       d.site ? "Site: " + d.site : "",
     ].filter(Boolean).join("\n");
@@ -443,6 +460,7 @@
       tem_loja: store ? "Sim" : "Não",
       segmento: form.segmento.value,
       faturamento: store ? form.faturamento.value : "",
+      mensagens: store ? form.mensagens.value : "",
       equipe: form.equipe.value,
       site: store ? form.site.value.trim() : "",
       aceite_politica_privacidade: true,
@@ -477,7 +495,7 @@
         .finally(function () { btn.disabled = false; btn.textContent = label; });
     } else if (hasWhatsApp) {
       window.open(waLink(summary(data)), "_blank", "noopener");
-      done("Abrimos o WhatsApp com as suas respostas. É só enviar a mensagem para combinarmos o diagnóstico.");
+      done("Abrimos o WhatsApp com as suas respostas. É só enviar a mensagem para combinarmos a demonstração.");
     } else {
       setStatus("fail", "O envio ainda não está configurado. Defina FORM_ENDPOINT ou WHATSAPP_NUMERO em config.js.");
       console.warn("[site] Formulário sem destino: configure FORM_ENDPOINT ou WHATSAPP_NUMERO em config.js.");
