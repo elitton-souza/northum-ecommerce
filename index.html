@@ -54,7 +54,7 @@
   <header class="site-header" id="topo">
     <div class="header-bar">
       <a class="brand" href="#topo" aria-label="Início">
-        <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 19 21 12 16.5 5 21Z"/></svg>
+        <span class="brand-badge" aria-hidden="true"><svg class="brand-mark" viewBox="0 0 24 24"><path d="M12 2 19 21 12 16.5 5 21Z"/></svg></span>
         <span data-config="NOME_EMPRESA">Northum</span>
       </a>
       <nav class="nav" id="menu" aria-label="Principal">
@@ -62,8 +62,9 @@
         <a href="#painel">O painel</a>
         <a href="#implantacao">Implantação</a>
         <a href="#perguntas">Perguntas</a>
+        <a class="btn btn-primary nav-cta" href="#demonstracao" data-cta="menu">Agendar demonstração</a>
       </nav>
-      <a class="btn btn-primary btn-sm header-cta" href="#demonstracao" data-cta="header">Agendar demonstração</a>
+      <a class="btn btn-primary btn-sm header-cta" href="#demonstracao" data-cta="header">Agendar demonstração<svg class="cta-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
       <button class="nav-toggle" aria-expanded="false" aria-controls="menu" aria-label="Abrir menu"><span></span><span></span></button>
     </div>
   </header>
