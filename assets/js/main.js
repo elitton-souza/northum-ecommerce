@@ -410,3 +410,26 @@
     }
   });
 })();
+
+/* ===== Vídeo de vendas: começa sem som; o botão recomeça com som ===== */
+(function () {
+  "use strict";
+  var video = document.getElementById("sales-video");
+  var btn = document.getElementById("video-sound");
+  if (!video || !btn) return;
+
+  // Alguns navegadores só liberam o autoplay se o "mudo" for definido via JS.
+  video.muted = true;
+  video.defaultMuted = true;
+  var tryPlay = function () { var p = video.play(); if (p && p.catch) p.catch(function () {}); };
+  tryPlay();
+
+  btn.addEventListener("click", function () {
+    video.loop = false;
+    video.muted = false;
+    video.currentTime = 0;
+    video.controls = true;
+    tryPlay();
+    btn.hidden = true;
+  });
+})();
