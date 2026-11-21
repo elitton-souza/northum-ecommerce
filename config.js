@@ -4,7 +4,7 @@ window.SITE_CONFIG = {
   NOME_EMPRESA: "Northum",
   NOME_METODO: "Método Conversão 7D", // provisório: verificar marca e domínio
 
-  WHATSAPP_NUMERO: "55XXXXXXXXXXX", // formato: 55 + DDD + número, só dígitos
+  WHATSAPP_NUMERO: "5547999616637", // formato: 55 + DDD + número, só dígitos
   EMAIL_CONTATO: "",
   CIDADE_UF: "",
   CNPJ: "",
