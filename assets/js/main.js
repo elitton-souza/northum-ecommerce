@@ -222,7 +222,7 @@
   }
 
   // ---------- Pop-up de agendamento ----------
-  // Passo 1: contato. Passo 2: sobre os leads. Envio: FORM_ENDPOINT → WhatsApp → aviso.
+  // Passo 1: contato. Passo 2: sobre os leads. Envio: Supabase → FORM_ENDPOINT → WhatsApp → aviso.
   var form = document.getElementById("apply-form");
   if (!applyDialog || !form) return;
   var formStatus = document.getElementById("form-status");
@@ -387,26 +387,54 @@
       showStep("done", "next");
     }
 
-    if (C.FORM_ENDPOINT) {
+    var supaUrl = (C.SUPABASE_URL || "").replace(/\/+$/, "");
+    var supaKey = C.SUPABASE_ANON_KEY || "";
+    var thanks = "Obrigado, " + data.nome.split(" ")[0] + "! Recebemos os seus dados. Em breve, um consultor da Northum vai entrar em contato pelo WhatsApp para conversar sobre os detalhes.";
+
+    function send(url, headers, body) {
       btn.disabled = true;
       btn.textContent = "Enviando…";
       setStatus("", "");
-      fetch(C.FORM_ENDPOINT, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify(data),
-      })
-        .then(function (r) { if (!r.ok) throw new Error(r.status); done(); })
+      fetch(url, { method: "POST", headers: headers, body: JSON.stringify(body) })
+        .then(function (r) { if (!r.ok) throw new Error(r.status); done(thanks); })
         .catch(function () {
           setStatus("fail", "Não foi possível enviar agora. Tente de novo em instantes" + (hasWhatsApp ? " ou fale conosco pelo WhatsApp." : "."));
         })
         .finally(function () { btn.disabled = false; btn.textContent = label; });
+    }
+
+    if (supaUrl && supaKey) {
+      send(supaUrl + "/rest/v1/leads", {
+        "Content-Type": "application/json",
+        apikey: supaKey,
+        Authorization: "Bearer " + supaKey,
+        Prefer: "return=minimal",
+      }, {
+        nome: data.nome,
+        email: data.email,
+        whatsapp: data.whatsapp,
+        empresa: data.empresa,
+        segmento: data.segmento,
+        leads_por_mes: data.leads,
+        equipe_comercial: data.equipe,
+        como_responde_hoje: data.hoje || null,
+        aceite_politica_privacidade: true,
+        origem: data.origem.slice(0, 80),
+        pagina: data.pagina.slice(0, 200),
+        utm_source: utm.utm_source || null,
+        utm_medium: utm.utm_medium || null,
+        utm_campaign: utm.utm_campaign || null,
+        utm_term: utm.utm_term || null,
+        utm_content: utm.utm_content || null,
+      });
+    } else if (C.FORM_ENDPOINT) {
+      send(C.FORM_ENDPOINT, { "Content-Type": "application/json", Accept: "application/json" }, data);
     } else if (hasWhatsApp) {
       window.open(waLink(summary(data)), "_blank", "noopener");
       done("Abrimos o WhatsApp com as suas respostas. É só enviar a mensagem para combinarmos a demonstração.");
     } else {
-      setStatus("fail", "O envio ainda não está configurado. Defina FORM_ENDPOINT ou WHATSAPP_NUMERO em config.js.");
-      console.warn("[site] Formulário sem destino: configure FORM_ENDPOINT ou WHATSAPP_NUMERO em config.js.");
+      setStatus("fail", "O envio ainda não está configurado. Defina SUPABASE_URL e SUPABASE_ANON_KEY em config.js.");
+      console.warn("[site] Formulário sem destino: configure SUPABASE_URL e SUPABASE_ANON_KEY em config.js.");
     }
   });
 })();

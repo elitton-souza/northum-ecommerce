@@ -11,7 +11,13 @@ window.SITE_CONFIG = {
   INSTAGRAM_URL: "",
   LINKEDIN_URL: "",
 
-  // URL que recebe o formulário via POST (JSON). Se vazio, o envio abre o WhatsApp.
+  // Supabase: onde os leads do formulário ficam salvos (tabela "leads").
+  // No Supabase: Project Settings > API (ou Data API). A chave é a "anon"/"publishable",
+  // que é pública e pode ficar no site. NUNCA coloque aqui a chave "service_role"/"secret".
+  SUPABASE_URL: "",
+  SUPABASE_ANON_KEY: "",
+
+  // Alternativa ao Supabase: URL que recebe o formulário via POST (JSON).
   FORM_ENDPOINT: "",
 
   // ---------- Landing page da VSL (/vsl) ----------
