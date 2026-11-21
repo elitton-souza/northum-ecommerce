@@ -385,15 +385,9 @@
       if (text) document.getElementById("apply-done-text").textContent = text;
       var wa = document.getElementById("apply-wa");
       if (wa && hasWhatsApp) {
-        // O lead manda o primeiro "oi" e a Nina começa o pré-atendimento com o contexto do formulário.
-        var msg = [
-          "Oi, Nina! Sou " + data.nome + ", da " + data.empresa + ". Acabei de pedir uma demonstração da Northum pelo site.",
-          "",
-          "Segmento: " + data.segmento,
-          "Leads por mês: " + data.leads,
-          "Time comercial: " + data.equipe,
-          data.hoje ? "Como respondemos hoje: " + data.hoje : "",
-        ].filter(function (l, i) { return l || i === 1; }).join("\n");
+        // O lead manda o primeiro "oi" e a Nina começa o pré-atendimento.
+        // Só a apresentação: a Nina busca o resto no Supabase pelo número do WhatsApp.
+        var msg = "Oi, Nina! Sou " + data.nome + ", da " + data.empresa + ". Acabei de pedir uma demonstração da Northum pelo site.";
         document.getElementById("apply-wa-link").href = waLink(msg);
         wa.hidden = false;
       }
