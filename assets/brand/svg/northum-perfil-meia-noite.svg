@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Northum">
+  <circle cx="32" cy="32" r="32" fill="#0A1626"/>
+  <path transform="translate(32 32) scale(0.7168) translate(-32.0 -31.0)" fill="#D4A857" d="M8 56V14h10l22 28V24h-6l11-18 11 18h-6v32H40L18 28v28Z"/>
+</svg>

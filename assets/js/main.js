@@ -24,18 +24,14 @@
     if (v) el.textContent = v;
   });
 
-  var showPrice = C.MOSTRAR_PRECO !== false;
   document.querySelectorAll("[data-show-if]").forEach(function (el) {
     var cond = el.getAttribute("data-show-if");
-    var visible =
-      (cond === "price" && showPrice) ||
-      (cond === "no-price" && !showPrice) ||
-      (cond === "whatsapp" && hasWhatsApp);
+    var visible = cond === "whatsapp" && hasWhatsApp;
     el.classList.toggle("is-hidden", !visible);
   });
 
   document.querySelectorAll(".js-whatsapp").forEach(function (a) {
-    a.href = waLink("Olá! Quero conhecer o agente de WhatsApp da Northum.");
+    a.href = waLink("Olá! Quero conhecer a Nina, a IA de vendas da Northum.");
     a.target = "_blank";
     a.rel = "noopener";
   });
@@ -55,195 +51,129 @@
     if (items.length) contact.innerHTML = '<li class="footer-title">Contato</li>' + items.join("");
   }
 
-  // ---------- Header e menu ----------
+  // ---------- Cabeçalho e menu ----------
   var header = document.querySelector(".site-header");
   var toggle = document.querySelector(".nav-toggle");
   var nav = document.getElementById("menu");
 
-  // Some ao rolar para baixo e volta ao rolar para cima (ou perto do topo).
-  var lastY = window.scrollY;
-  function onScroll() {
-    var y = window.scrollY;
-    header.classList.toggle("scrolled", y > 20);
-    var menuOpen = nav.classList.contains("open");
-    var focusInside = header.contains(document.activeElement) && document.activeElement !== document.body;
-    if (y < 120 || menuOpen || focusInside) header.classList.remove("is-hidden");
-    else if (y > lastY + 4) header.classList.add("is-hidden");
-    else if (y < lastY - 4) header.classList.remove("is-hidden");
-    if (Math.abs(y - lastY) > 4) lastY = y;
-  }
-  window.addEventListener("scroll", onScroll, { passive: true });
-  onScroll();
-  // Navegação por teclado: o menu reaparece ao receber foco.
-  header.addEventListener("focusin", function () { header.classList.remove("is-hidden"); });
+  if (header && toggle && nav) {
+    // Some ao rolar para baixo e volta ao rolar para cima (ou perto do topo).
+    var lastY = window.scrollY;
+    var onScroll = function () {
+      var y = window.scrollY;
+      header.classList.toggle("scrolled", y > 20);
+      var menuOpen = nav.classList.contains("open");
+      var focusInside = header.contains(document.activeElement) && document.activeElement !== document.body;
+      if (y < 120 || menuOpen || focusInside) header.classList.remove("is-hidden");
+      else if (y > lastY + 4) header.classList.add("is-hidden");
+      else if (y < lastY - 4) header.classList.remove("is-hidden");
+      if (Math.abs(y - lastY) > 4) lastY = y;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    header.addEventListener("focusin", function () { header.classList.remove("is-hidden"); });
 
-  function setMenu(open) {
-    toggle.setAttribute("aria-expanded", String(open));
-    toggle.setAttribute("aria-label", open ? "Fechar menu" : "Abrir menu");
-    nav.classList.toggle("open", open);
-    header.classList.toggle("menu-open", open);
-    document.documentElement.classList.toggle("menu-open", open);
-  }
-  toggle.addEventListener("click", function () { setMenu(toggle.getAttribute("aria-expanded") !== "true"); });
-  nav.addEventListener("click", function (e) { if (e.target.closest("a")) setMenu(false); });
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape") setMenu(false); });
-  // Toque fora da barra (no fundo escurecido) fecha o menu.
-  header.addEventListener("click", function (e) { if (e.target === header) setMenu(false); });
-  window.addEventListener("resize", function () { if (window.innerWidth > 1020) setMenu(false); });
+    var setMenu = function (open) {
+      toggle.setAttribute("aria-expanded", String(open));
+      toggle.setAttribute("aria-label", open ? "Fechar menu" : "Abrir menu");
+      nav.classList.toggle("open", open);
+      header.classList.toggle("menu-open", open);
+      document.documentElement.classList.toggle("menu-open", open);
+    };
+    toggle.addEventListener("click", function () { setMenu(toggle.getAttribute("aria-expanded") !== "true"); });
+    nav.addEventListener("click", function (e) { if (e.target.closest("a")) setMenu(false); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") setMenu(false); });
+    // Toque no fundo escurecido fecha o menu.
+    header.addEventListener("click", function (e) { if (e.target === header) setMenu(false); });
+    window.addEventListener("resize", function () { if (window.innerWidth > 1060) setMenu(false); });
 
-  // ---------- Menu: marca a seção em que o visitante está ----------
-  var spyLinks = {};
-  nav.querySelectorAll('a[href^="#"]:not(.nav-cta)').forEach(function (a) { spyLinks[a.getAttribute("href").slice(1)] = a; });
-  if ("IntersectionObserver" in window) {
-    var spy = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        var link = spyLinks[entry.target.id];
-        if (!link) return;
-        if (entry.isIntersecting) {
-          Object.keys(spyLinks).forEach(function (id) { spyLinks[id].removeAttribute("aria-current"); });
-          link.setAttribute("aria-current", "true");
-        } else {
-          link.removeAttribute("aria-current");
-        }
+    // Marca no menu a seção em que o visitante está.
+    var spyLinks = {};
+    nav.querySelectorAll('a[href^="#"]:not(.nav-cta)').forEach(function (a) { spyLinks[a.getAttribute("href").slice(1)] = a; });
+    if ("IntersectionObserver" in window) {
+      var spy = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          var link = spyLinks[entry.target.id];
+          if (!link) return;
+          if (entry.isIntersecting) {
+            Object.keys(spyLinks).forEach(function (id) { spyLinks[id].removeAttribute("aria-current"); });
+            link.setAttribute("aria-current", "true");
+          } else {
+            link.removeAttribute("aria-current");
+          }
+        });
+      }, { rootMargin: "-45% 0px -50% 0px" });
+      Object.keys(spyLinks).forEach(function (id) {
+        var sec = document.getElementById(id);
+        if (sec) spy.observe(sec);
       });
-    }, { rootMargin: "-45% 0px -50% 0px" });
-    Object.keys(spyLinks).forEach(function (id) {
-      var sec = document.getElementById(id);
-      if (sec) spy.observe(sec);
-    });
+    }
   }
 
-  // ---------- Painel de exemplo no topo: botão "Assumir conversa" ----------
-  var mock = document.getElementById("app-mock");
-  var takeBtn = document.getElementById("am-take");
-  if (mock && takeBtn) {
+  // ---------- Conversa de exemplo no topo ----------
+  // Sem JavaScript (ou com redução de movimento), a conversa aparece inteira.
+  // Com JavaScript, ela se desenrola em ordem: o lead escreve, a Nina espera, digita e responde.
+  var demo = document.getElementById("demo");
+  if (demo && !reduceMotion) {
+    var status = document.getElementById("demo-status");
+    var byStep = function (n) { return demo.querySelectorAll('[data-step="' + n + '"]'); };
+    var timers = [];
+    var later = function (ms, fn) { timers.push(setTimeout(fn, ms)); };
+    var show = function (n, gap) {
+      Array.prototype.forEach.call(byStep(n), function (el, i) { later(i * (gap || 0), function () { el.classList.add("on"); }); });
+    };
+
+    var play = function () {
+      timers.forEach(clearTimeout); timers = [];
+      demo.classList.add("is-playing");
+      demo.querySelectorAll("[data-step]").forEach(function (el) { el.classList.remove("on", "off"); });
+      if (status) status.textContent = "online";
+      var typing = demo.querySelector(".msg.typing");
+      later(300, function () { show(1); });
+      later(1300, function () { show(2); });
+      // A Nina espera o lead terminar de escrever antes de responder.
+      later(2900, function () { show(3); if (status) status.textContent = "Nina está digitando…"; });
+      later(4300, function () { typing.classList.add("off"); show(4, 650); if (status) status.textContent = "online"; });
+      later(7000, function () { show(5); });
+      later(8300, function () { if (status) status.textContent = "Nina está digitando…"; });
+      later(9300, function () { show(6, 650); if (status) status.textContent = "online"; });
+      later(10800, function () { show(7); track("demo_completa"); });
+    };
+
+    if ("IntersectionObserver" in window) {
+      var played = false;
+      new IntersectionObserver(function (entries, obs) {
+        if (entries[0].isIntersecting && !played) { played = true; play(); obs.disconnect(); }
+      }, { threshold: 0.3 }).observe(demo);
+    }
+  }
+
+  // ---------- Botão Assumir (seção de controle) ----------
+  var takeBtn = document.getElementById("take-btn");
+  if (takeBtn) {
     takeBtn.addEventListener("click", function () {
       if (takeBtn.getAttribute("aria-pressed") === "true") return;
       takeBtn.setAttribute("aria-pressed", "true");
       takeBtn.querySelector("span").textContent = "Você assumiu";
-      mock.classList.add("is-taken");
-      document.getElementById("am-status").textContent = "Você está respondendo";
-      document.getElementById("am-sys").hidden = false;
-      document.getElementById("am-input").textContent = "Escreva sua mensagem para a Mariana…";
+      document.getElementById("take-status").textContent = "Com você";
+      document.getElementById("take-sys").hidden = false;
+      setTimeout(function () { document.getElementById("take-human").hidden = false; }, reduceMotion ? 0 : 700);
       track("demo_assumir");
     });
   }
 
-  // ---------- CTAs: rastrear; os de demonstração abrem o pop-up de agendamento ----------
+  // ---------- CTAs: rastrear; os de demonstração abrem o pop-up ----------
+  var applyDialog = document.getElementById("apply-dialog");
   document.querySelectorAll("[data-cta]").forEach(function (el) {
     el.addEventListener("click", function (e) {
       track("cta_click", { origem: el.getAttribute("data-cta") });
       if (el.classList.contains("js-whatsapp")) track("whatsapp_click", { origem: el.getAttribute("data-cta") });
-      if (el.getAttribute("href") === "#demonstracao" && applyDialog) {
+      if (el.getAttribute("href") === "#demonstracao" && applyDialog && el.getAttribute("data-cta") !== "menu-scroll") {
         e.preventDefault();
         openApply(el);
       }
     });
   });
-
-  // ---------- Vídeo do hero ----------
-  var heroPlayer = document.getElementById("hero-player");
-  var heroVideo = document.getElementById("hero-video");
-  var heroPlay = document.getElementById("hero-play");
-  if (heroPlayer && heroVideo && heroPlay) {
-    // Sem JavaScript o vídeo mantém os controles nativos; com ele, a capa fica limpa até o play.
-    heroVideo.controls = false;
-    var heroTrack = heroVideo.textTracks && heroVideo.textTracks[0];
-    var heroPlayText = heroPlay.getAttribute("aria-label");
-    var marks = {};
-    function mark(name) { if (!marks[name]) { marks[name] = true; track(name, { video: "institucional" }); } }
-
-    // Assistir com som, do início, com os controles do navegador.
-    function playWithSound() {
-      var wasPreview = heroPlayer.classList.contains("is-preview");
-      heroPlayer.classList.remove("is-preview");
-      heroPlayer.classList.add("is-playing");
-      heroVideo.loop = false;
-      heroVideo.muted = false;
-      heroVideo.controls = true;
-      if (wasPreview) { heroVideo.currentTime = 0; track("video_unmute", { video: "institucional" }); }
-      if (heroTrack) heroTrack.mode = "disabled";
-      var p = heroVideo.play();
-      if (p && p.then) p.then(function () { mark("video_play"); });
-      if (p && p.catch) p.catch(function () { heroPlayer.classList.remove("is-playing"); });
-      heroVideo.focus({ preventScroll: true });
-    }
-    heroPlay.addEventListener("click", playWithSound);
-    heroVideo.addEventListener("click", function () { if (heroPlayer.classList.contains("is-preview")) playWithSound(); });
-
-    // Começa sozinho, sem som e com legendas: os navegadores só permitem autoplay mudo.
-    // O som só é ligado por um clique (playWithSound); a prévia nunca perde o mudo sozinha.
-    // Se o celular bloquear o autoplay (ex.: modo de economia de bateria do iPhone),
-    // a prévia começa no primeiro toque na página.
-    function retryOnFirstTouch() {
-      var events = ["touchend", "click", "keydown"];
-      function go() {
-        events.forEach(function (ev) { document.removeEventListener(ev, go, true); });
-        startPreview();
-      }
-      events.forEach(function (ev) { document.addEventListener(ev, go, true); });
-    }
-    function startPreview() {
-      if (heroPlayer.classList.contains("is-playing")) return;
-      heroVideo.muted = true;
-      heroVideo.loop = true;
-      heroVideo.preload = "auto";
-      if (heroTrack) heroTrack.mode = "showing";
-      var auto = heroVideo.play();
-      if (!auto || !auto.then) return;
-      auto.then(function () {
-        if (heroPlayer.classList.contains("is-playing")) return;
-        heroPlayer.classList.add("is-preview");
-        heroPlay.setAttribute("aria-label", "Ativar o som e assistir ao vídeo do início");
-        track("video_autoplay", { video: "institucional" });
-      }).catch(function (err) {
-        if (heroPlayer.classList.contains("is-playing")) return;
-        // Aba em segundo plano: o navegador interrompe vídeos mudos; tenta de novo quando ela ficar visível.
-        if (err && err.name === "AbortError" && document.hidden) {
-          document.addEventListener("visibilitychange", function retry() {
-            if (document.hidden) return;
-            document.removeEventListener("visibilitychange", retry);
-            startPreview();
-          });
-          return;
-        }
-        // Autoplay bloqueado: fica a capa com o botão de play até o primeiro toque.
-        heroVideo.pause();
-        heroVideo.loop = false;
-        if (heroTrack) heroTrack.mode = "disabled";
-        heroPlay.setAttribute("aria-label", heroPlayText);
-        retryOnFirstTouch();
-      });
-    }
-    if (document.hidden) {
-      document.addEventListener("visibilitychange", function firstShow() {
-        if (document.hidden) return;
-        document.removeEventListener("visibilitychange", firstShow);
-        startPreview();
-      });
-    } else {
-      startPreview();
-    }
-
-    // Fio de progresso enquanto a prévia muda toca (escreve direto no transform, sem variável CSS).
-    var heroBar = document.getElementById("hero-progress");
-    if (heroBar && window.requestAnimationFrame) {
-      (function tick() {
-        if (heroPlayer.classList.contains("is-preview") && heroVideo.duration && !document.hidden) {
-          heroBar.style.transform = "scaleX(" + (heroVideo.currentTime / heroVideo.duration).toFixed(4) + ")";
-        }
-        if (!heroPlayer.classList.contains("is-playing")) requestAnimationFrame(tick);
-      })();
-    }
-
-    // Analytics: início, metade e fim (uma vez cada)
-    // Só conta quem assiste com som; a prévia muda tem o próprio evento (video_autoplay).
-    heroVideo.addEventListener("play", function () { if (!heroVideo.muted) mark("video_play"); });
-    heroVideo.addEventListener("timeupdate", function () {
-      if (!heroVideo.muted && heroVideo.duration && heroVideo.currentTime / heroVideo.duration >= 0.5) mark("video_50");
-    });
-    heroVideo.addEventListener("ended", function () { if (!heroVideo.muted) mark("video_complete"); });
-  }
 
   // ---------- Entrada dos blocos ao rolar ----------
   var reveals = document.querySelectorAll(".reveal");
@@ -254,7 +184,6 @@
       entries.forEach(function (entry) {
         if (!entry.isIntersecting) return;
         var el = entry.target;
-        // pequenos atrasos em grupos lado a lado
         var siblings = Array.prototype.filter.call(el.parentElement.children, function (c) { return c.classList.contains("reveal"); });
         var i = siblings.indexOf(el);
         el.style.transitionDelay = [0, 60, 110, 150, 180, 200][Math.min(Math.max(i, 0), 5)] + "ms";
@@ -265,49 +194,48 @@
     reveals.forEach(function (el) { io.observe(el); });
   }
 
-  // ---------- WhatsApp flutuante some perto do formulário ----------
+  // ---------- WhatsApp flutuante some perto da chamada final ----------
   var fab = document.querySelector(".wa-float");
-  var diag = document.getElementById("demonstracao");
-  if (fab && diag && "IntersectionObserver" in window) {
+  var finalSec = document.getElementById("demonstracao");
+  if (fab && finalSec && "IntersectionObserver" in window) {
     new IntersectionObserver(function (entries) {
       fab.classList.toggle("tucked", entries[0].isIntersecting);
-    }, { threshold: 0.15 }).observe(diag);
+    }, { threshold: 0.15 }).observe(finalSec);
   }
 
   // ---------- Barra de ação no celular ----------
-  // Aparece depois que os botões do topo saem da tela e some perto da seção de diagnóstico.
+  // Aparece depois que os botões do topo saem da tela e some perto da chamada final.
   var ctaBar = document.getElementById("cta-bar");
   var heroActions = document.querySelector(".hero .actions");
-  if (ctaBar && heroActions && diag && "IntersectionObserver" in window) {
+  if (ctaBar && heroActions && finalSec && "IntersectionObserver" in window) {
     document.body.classList.add("has-cta-bar");
-    var pastHero = false, nearDiag = false;
-    var syncBar = function () { ctaBar.classList.toggle("is-on", pastHero && !nearDiag); };
+    var pastHero = false, nearFinal = false;
+    var syncBar = function () { ctaBar.classList.toggle("is-on", pastHero && !nearFinal); };
     new IntersectionObserver(function (entries) {
       pastHero = !entries[0].isIntersecting && entries[0].boundingClientRect.top < 0;
       syncBar();
     }).observe(heroActions);
     new IntersectionObserver(function (entries) {
-      nearDiag = entries[0].isIntersecting;
+      nearFinal = entries[0].isIntersecting;
       syncBar();
-    }, { threshold: 0.05 }).observe(diag);
+    }, { threshold: 0.05 }).observe(finalSec);
   }
 
-  // ---------- Pop-up de aplicação para o diagnóstico gratuito ----------
-  // Passo 1: contato e se tem loja. Passo 2: sobre a loja. Envio: FORM_ENDPOINT → WhatsApp → aviso.
-  var applyDialog = document.getElementById("apply-dialog");
+  // ---------- Pop-up de agendamento ----------
+  // Passo 1: contato. Passo 2: sobre os leads. Envio: FORM_ENDPOINT → WhatsApp → aviso.
   var form = document.getElementById("apply-form");
-  var status = document.getElementById("form-status");
+  if (!applyDialog || !form) return;
+  var formStatus = document.getElementById("form-status");
   var lastTrigger = null;
   var applyOrigin = "";
-  var steps = form ? form.querySelectorAll(".apply-step") : [];
-  var bars = form ? form.querySelectorAll(".apply-progress i") : [];
+  var steps = form.querySelectorAll(".apply-step");
+  var bars = form.querySelectorAll(".apply-progress i");
 
-  // UTMs da URL vão junto com a aplicação
+  // UTMs da URL vão junto com o pedido
   var utm = {};
   new URLSearchParams(location.search).forEach(function (v, k) { if (/^utm_/.test(k)) utm[k] = v; });
 
   function showStep(name, dir) {
-    // dir: "next" ou "back" animam a troca; sem dir, o passo aparece direto (abertura do pop-up).
     if (dir) form.setAttribute("data-dir", dir); else form.removeAttribute("data-dir");
     steps.forEach(function (s) { s.hidden = s.getAttribute("data-step") !== name; });
     bars.forEach(function (b, i) { b.classList.toggle("on", name === "done" || i < Number(name)); });
@@ -320,7 +248,7 @@
   function openApply(trigger) {
     lastTrigger = trigger || null;
     applyOrigin = (trigger && trigger.getAttribute("data-cta")) || "";
-    if (form.querySelector('[data-step="done"]').hidden === false) { form.reset(); setStatus("", ""); showStep("1"); }
+    if (!form.querySelector('[data-step="done"]').hidden) { form.reset(); setStatus("", ""); showStep("1"); }
     if (typeof applyDialog.showModal === "function") applyDialog.showModal();
     else applyDialog.setAttribute("open", "");
     document.body.classList.add("dialog-open");
@@ -333,22 +261,16 @@
   }
   function onClose() {
     document.body.classList.remove("dialog-open");
-    // Depois de uma aplicação enviada, volta ao passo 1 só quando o pop-up terminar de sair.
     if (!form.querySelector('[data-step="done"]').hidden) {
       setTimeout(function () { if (!applyDialog.open) { form.reset(); showStep("1"); setStatus("", ""); } }, 220);
     }
     if (lastTrigger) lastTrigger.focus({ preventScroll: true });
   }
-  if (!applyDialog || !form) return;
   applyDialog.addEventListener("close", onClose);
   applyDialog.addEventListener("click", function (e) { if (e.target === applyDialog) closeApply(); });
   form.querySelectorAll("[data-close]").forEach(function (b) { b.addEventListener("click", closeApply); });
   if (location.hash === "#aplicar") openApply(null);
 
-  function hasStore() {
-    var c = form.querySelector('input[name="tem_loja"]:checked');
-    return !c || c.value === "Sim";
-  }
   function phoneDigits(v) {
     var d = digits(v);
     if (d.length > 11 && d.indexOf("55") === 0) d = d.slice(2);
@@ -359,39 +281,36 @@
     nome: function (v) { return v.trim().length >= 2 || "Informe seu nome."; },
     email: function (v) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()) || "Informe um e-mail válido."; },
     whatsapp: function (v) { var d = phoneDigits(v); return (d.length === 10 || d.length === 11) || "Informe o WhatsApp com DDD."; },
-    tem_loja: function () { return !!form.querySelector('input[name="tem_loja"]:checked') || "Selecione uma opção."; },
+    empresa: function (v) { return v.trim().length >= 2 || "Informe o nome da empresa."; },
     segmento: function (v) { return !!v || "Selecione o segmento."; },
-    faturamento: function (v) { return !hasStore() || !!v || "Selecione uma faixa, ou \"Prefiro não informar\"."; },
-    equipe: function (v) { return !!v || "Selecione o tamanho da equipe."; },
+    leads: function (v) { return !!v || "Selecione uma faixa, ou \"Não sei\"."; },
+    equipe: function (v) { return !!v || "Selecione o tamanho do time."; },
   };
-  var stepFields = { 1: ["nome", "email", "whatsapp", "tem_loja"], 2: ["segmento", "faturamento", "equipe"] };
+  var stepFields = { 1: ["nome", "email", "whatsapp", "empresa"], 2: ["segmento", "leads", "equipe"] };
 
   function check(name) {
     var el = form.elements[name];
-    var target = el.length && !el.tagName ? el[0] : el;
-    var res = rules[name](el.value || "", el);
+    var res = rules[name](el.value || "");
     var err = document.getElementById("e-" + name);
     var ok = res === true;
-    target.setAttribute("aria-invalid", ok ? "false" : "true");
+    el.setAttribute("aria-invalid", ok ? "false" : "true");
     if (err) {
       err.textContent = ok ? "" : res;
-      if (!ok) target.setAttribute("aria-describedby", err.id); else target.removeAttribute("aria-describedby");
+      if (!ok) el.setAttribute("aria-describedby", err.id); else el.removeAttribute("aria-describedby");
     }
     return ok;
   }
   function checkStep(n) {
     var firstBad = null;
-    stepFields[n].forEach(function (name) {
-      if (!check(name) && !firstBad) { var el = form.elements[name]; firstBad = el.length && !el.tagName ? el[0] : el; }
-    });
+    stepFields[n].forEach(function (name) { if (!check(name) && !firstBad) firstBad = form.elements[name]; });
     if (firstBad) firstBad.focus();
     return !firstBad;
   }
 
-  ["nome", "email", "whatsapp"].forEach(function (name) {
+  ["nome", "email", "whatsapp", "empresa"].forEach(function (name) {
     form.elements[name].addEventListener("blur", function () { if (this.value) check(name); });
   });
-  ["segmento", "faturamento", "equipe"].forEach(function (name) {
+  ["segmento", "leads", "equipe"].forEach(function (name) {
     form.elements[name].addEventListener("change", function () { check(name); });
   });
 
@@ -404,22 +323,9 @@
     this.value = out;
   });
 
-  // Sem loja: o passo 2 fala do projeto e não pede faturamento nem site.
-  function applyStoreMode() {
-    var store = hasStore();
-    form.querySelectorAll("[data-text-loja]").forEach(function (el) {
-      el.textContent = el.getAttribute(store ? "data-text-loja" : "data-text-sem-loja");
-    });
-    form.querySelectorAll("[data-only-loja]").forEach(function (el) { el.hidden = !store; });
-  }
-  form.querySelectorAll('input[name="tem_loja"]').forEach(function (r) {
-    r.addEventListener("change", function () { check("tem_loja"); applyStoreMode(); });
-  });
-
   document.getElementById("apply-next").addEventListener("click", function () {
     if (!checkStep(1)) return;
-    applyStoreMode();
-    track("apply_step1", { origem: applyOrigin, tem_loja: hasStore() ? "sim" : "nao" });
+    track("apply_step1", { origem: applyOrigin });
     showStep("2", "next");
   });
   document.getElementById("apply-back").addEventListener("click", function () { setStatus("", ""); showStep("1", "back"); });
@@ -432,23 +338,22 @@
   });
 
   function setStatus(kind, msg) {
-    status.className = "form-status " + kind;
-    status.textContent = msg;
+    formStatus.className = "form-status " + kind;
+    formStatus.textContent = msg;
   }
 
   function summary(d) {
     return [
-      "Olá! Quero agendar uma demonstração do agente de WhatsApp da Northum.",
+      "Olá! Quero agendar uma demonstração da Nina, a IA de vendas da Northum.",
       "",
       "Nome: " + d.nome,
       "E-mail: " + d.email,
       "WhatsApp: " + d.whatsapp,
-      "Tem loja: " + d.tem_loja,
+      "Empresa: " + d.empresa,
       "Segmento: " + d.segmento,
-      d.faturamento ? "Faturamento mensal: " + d.faturamento : "",
-      d.mensagens ? "Mensagens por dia no WhatsApp: " + d.mensagens : "",
-      "Equipe: " + d.equipe,
-      d.site ? "Site: " + d.site : "",
+      "Leads por mês no WhatsApp: " + d.leads,
+      "Time comercial: " + d.equipe,
+      d.hoje ? "Como respondem hoje: " + d.hoje : "",
     ].filter(Boolean).join("\n");
   }
 
@@ -456,18 +361,16 @@
     e.preventDefault();
     if (!checkStep(1)) { showStep("1", "back"); checkStep(1); return; }
     if (!checkStep(2)) return;
-    var store = hasStore();
 
     var data = Object.assign({
       nome: form.nome.value.trim(),
       email: form.email.value.trim(),
       whatsapp: "+55" + phoneDigits(form.whatsapp.value),
-      tem_loja: store ? "Sim" : "Não",
+      empresa: form.empresa.value.trim(),
       segmento: form.segmento.value,
-      faturamento: store ? form.faturamento.value : "",
-      mensagens: store ? form.mensagens.value : "",
+      leads: form.leads.value,
       equipe: form.equipe.value,
-      site: store ? form.site.value.trim() : "",
+      hoje: form.hoje.value,
       aceite_politica_privacidade: true,
       origem: "site" + (applyOrigin ? ":" + applyOrigin : ""),
       pagina: location.pathname,
@@ -478,7 +381,7 @@
     var label = btn.textContent;
 
     function done(text) {
-      track("form_submit", { origem: applyOrigin, tem_loja: store ? "sim" : "nao", faturamento: data.faturamento, equipe: data.equipe });
+      track("form_submit", { origem: applyOrigin, segmento: data.segmento, leads: data.leads, equipe: data.equipe });
       if (text) document.getElementById("apply-done-text").textContent = text;
       setStatus("", "");
       showStep("done", "next");
