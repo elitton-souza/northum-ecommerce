@@ -14,8 +14,8 @@ window.SITE_CONFIG = {
   // Supabase: onde os leads do formulário ficam salvos (tabela "leads").
   // No Supabase: Project Settings > API (ou Data API). A chave é a "anon"/"publishable",
   // que é pública e pode ficar no site. NUNCA coloque aqui a chave "service_role"/"secret".
-  SUPABASE_URL: "",
-  SUPABASE_ANON_KEY: "",
+  SUPABASE_URL: "https://xcapfhqegjvrfwqdncqu.supabase.co",
+  SUPABASE_ANON_KEY: "sb_publishable_9HrvuY-8JDbGldqA_4E5DA_tZvRPNjL",
 
   // Alternativa ao Supabase: URL que recebe o formulário via POST (JSON).
   FORM_ENDPOINT: "",
