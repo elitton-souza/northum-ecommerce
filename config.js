@@ -1,7 +1,7 @@
 // Dados editáveis do site. Altere aqui sem mexer no layout.
 // Campos vazios ("") não são exibidos.
 window.SITE_CONFIG = {
-  NOME_EMPRESA: "Northum", // provisório: confirmar marca
+  NOME_EMPRESA: "Northum",
   NOME_METODO: "Método Conversão 7D", // provisório: verificar marca e domínio
 
   WHATSAPP_NUMERO: "55XXXXXXXXXXX", // formato: 55 + DDD + número, só dígitos
