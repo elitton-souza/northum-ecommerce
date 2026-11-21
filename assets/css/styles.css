@@ -542,3 +542,12 @@ body.dialog-open { overflow: hidden; }
   .hero-copy > .actions { order: 5; }
   .hero-copy > .hero-facts { order: 6; }
 }
+
+/* ===== Tela de obrigado: botão para falar com a Nina ===== */
+.apply-wa { width: 100%; display: flex; flex-direction: column; gap: .9rem; margin-top: .4rem; padding: 1.1rem; border-radius: var(--r-md); background: rgba(11, 145, 248, .08); border: 1px solid rgba(11, 145, 248, .28); }
+.apply-wa p { margin: 0; font-size: .9375rem; line-height: 1.5; color: var(--d-muted); }
+.apply-wa b { color: var(--d-text); }
+.btn-wa { background: #25D366; color: #06210F; box-shadow: 0 10px 28px -12px rgba(37, 211, 102, .6); }
+.btn-wa svg { width: 22px; height: 22px; flex: none; }
+@media (hover: hover) and (pointer: fine) { .btn-wa:hover { background: #3BE07A; } }
+.apply-done-close { width: 100%; }
